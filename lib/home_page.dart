@@ -33,10 +33,29 @@ class Order {
 
 class Item {
   String name;
-  Item(this.name);
+  Item(
+    this.name,
+    this.details,
+  );
+  List<Detail> details;
 
   factory Item.fromMap(Map<String, dynamic> map) {
-    return Item(map["name"]);
+    List<Detail> details =
+        List.from(map['details']).map((e) => Detail.fromMap(e)).toList();
+    return Item(map['name'], details);
+  }
+}
+
+class Detail {
+  String name;
+  String ukuran;
+  Detail(this.name, this.ukuran);
+
+  factory Detail.fromMap(Map<String, dynamic> map) {
+    return Detail(
+      map['name'],
+      map['ukuran'],
+    );
   }
 }
 
@@ -82,17 +101,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Decode the JSON string into a Map or List (depending on the JSON structure)
     final data = jsonDecode(jsonString);
-    
+
     var transaction = Transaction.fromMap(data);
 
     print(transaction.name);
 
-    for(Order order in transaction.orders){
-       for(Item item in order.items){
-          print(item.name);
-       }
+    for (Order order in transaction.orders) {
+      for (Item item in order.items) {
+        for (Detail detail in item.details) {
+          print('${detail.name}\n${detail.ukuran}');
+        }
+      }
     }
-    
+
     // for(dynamic order in orders){
     //   for(dynamic item in order["items"]){
     //     print(item);
