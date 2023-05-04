@@ -33,10 +33,29 @@ class Order {
 
 class Item {
   String name;
-  Item(this.name);
+  Item(
+    this.name,
+    // this.details,
+  );
+  // List<Detail> details;
 
   factory Item.fromMap(Map<String, dynamic> map) {
-    return Item(map["name"]);
+    // List<Detail> details =
+    //     List.from(map['details']).map((e) => Detail.fromMap(e)).toList();
+    return Item(map['name']);
+  }
+}
+
+class Detail {
+  String name;
+  String ukuran;
+  Detail(this.name, this.ukuran);
+
+  factory Detail.fromMap(Map<String, dynamic> map) {
+    return Detail(
+      map['name'],
+      map['ukuran'],
+    );
   }
 }
 
@@ -75,24 +94,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _getCustomerData() async {
     // Load the contents of the customer.json file from the assets folder
-    String jsonString = await rootBundle.loadString('assets/transaction.json');
+    String jsonString =
+        await rootBundle.loadString('assets/transaction_list.json');
 
     // Delay the function invocation to simulate real https request
     await Future.delayed(const Duration(microseconds: 2000));
 
     // Decode the JSON string into a Map or List (depending on the JSON structure)
     final data = jsonDecode(jsonString);
-    
-    var transaction = Transaction.fromMap(data);
 
-    print(transaction.name);
+    var transactionList = List<Map<String, dynamic>>.from(data);
+    List<Transaction> list =
+        transactionList.map((e) => Transaction.fromMap(e)).toList();
+    print(list[0].name);
 
-    for(Order order in transaction.orders){
-       for(Item item in order.items){
-          print(item.name);
-       }
-    }
-    
+    // for (Order order in transaction.orders) {
+    //   for (Item item in order.items) {
+    //     for (Detail detail in item.details) {
+    //       print('${detail.name}\n${detail.ukuran}');
+    //     }
+    //   }
+    // }
+
     // for(dynamic order in orders){
     //   for(dynamic item in order["items"]){
     //     print(item);
